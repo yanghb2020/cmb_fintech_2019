@@ -13,14 +13,20 @@ class Solution:
         data = self.process(data)
         if len(data) == 1:
             return [0]
-        vocab, idf, vb_count = self.vocabulary(data)
+        # 获取词汇表，document frequency， 词频
+        vocab, df, vb_count = self.vocabulary(data)
+        # 去频率为1的词
         for line in data:
             for word in line:
                 if vb_count[word] <= 1:
                     line.remove(word)
+        # 重新获取
         vocab, df, vb_count = self.vocabulary(data)
+        # 提取特征
         tfidf = self.get_tfidf(data, vocab, df)
+        # 计算相似度
         sim = self.cosine_sim(tfidf)
+        # 聚类
         res = hierarchical(np.array(tfidf), sim)
         return res
 
